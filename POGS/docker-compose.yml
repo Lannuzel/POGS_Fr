@@ -1,0 +1,106 @@
+version: '2'
+services:
+  database:
+    image: mysql:8
+    container_name: pogsmysql
+    ports:
+      - "3307:3306"
+    #command: mysqld --sql_mode=""
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    volumes:
+      - .mysql:/var/lib/mysql
+      - .docker/pogsserver/sql/:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE : ${MYSQL_DATABASE}
+      TZ : America/New_York
+      #MYSQL_USER: ${MYSQL_USER}
+      #MYSQL_PASSWORD: 1234
+    networks:
+      - test-network
+
+  nodeserver:
+    build :
+      context: ./src/main/resources/plugins/typingEtherpadPlugin/etherpad-server/
+      dockerfile: Dockerfile
+    environment:
+      - ALLOW_OVERRIDE=${ALLOW_OVERRIDE}
+      - ETHERPAD_PASSWORD=${ETHERPAD_PASSWORD}
+      - NODE_ENV=${NODE_ENV}
+      - TZ=America/New_York
+    ports:
+      - "9001:9001"
+    links:
+      - database
+      - redisserver
+    #volumes:
+    #  - mci-sync:/home/mci:nocopy
+    restart: always
+    networks:
+      - test-network
+    depends_on:
+      - database
+      - redisserver
+  pogsserver:
+    build :
+      context: .
+      dockerfile: .docker/pogsserver/Dockerfile
+    environment:
+      - ALLOW_OVERRIDE=${ALLOW_OVERRIDE}
+      - POGS_PASSWORD=${POGS_PASSWORD}
+      - VIDEO_PROVIDER_PRIVATE_KEY_PATH=${VIDEO_PROVIDER_PRIVATE_KEY_PATH}
+      - VIDEO_PROVIDER_API_KEY=${VIDEO_PROVIDER_API_KEY}
+      - VIDEO_PROVIDER_APP_ID=${VIDEO_PROVIDER_APP_ID}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    ports:
+      - "8080:8080"
+    links:
+      - database
+      - redisserver
+    restart: always
+      #restart: unless-stopped
+      #volumes:
+      # - mci-sync:/home/mci:nocopy
+    volumes:
+      - .imagefiles:/app/uploadedFiles
+    networks:
+      - test-network
+    depends_on:
+      - database
+      - redisserver
+  pythonserver:
+    build :
+      context: .
+      dockerfile: .docker/pythonserver/Dockerfile
+    environment:
+      - ALLOW_OVERRIDE=${ALLOW_OVERRIDE}
+    ports:
+      - "8082:8082"
+    links:
+      - database
+      - redisserver
+    restart: always
+      #restart: unless-stopped
+      #volumes:
+      # - mci-sync:/home/mci:nocopy
+    networks:
+      - test-network
+    depends_on:
+      - database
+      - redisserver
+  redisserver:
+    image: redis
+    ports:
+      - "6380:6379"
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: "192.168.10.0/24"

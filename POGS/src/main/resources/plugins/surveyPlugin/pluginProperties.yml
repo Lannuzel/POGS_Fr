@@ -1,0 +1,5 @@
+name: surveyPlugin
+description: A survey like task implementation, the researcher can setup the fields and their right answer
+
+scoring:
+    scoringType : script

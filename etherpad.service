@@ -1,0 +1,16 @@
+[Unit]
+Description=Etherpad Lite Service
+After=network.target
+
+[Service]
+ExecStart=/root/.nvm/versions/node/v9.11.1/bin/node /root/POGS_Fr/etherpad-lite/node_modules/ep_etherpad-lite/node/server.js
+WorkingDirectory=/root/POGS_Fr/etherpad-lite
+Environment=NODE_ENV=production
+User=root
+Restart=on-failure
+RestartSec=10
+StandardOutput=append:/var/log/etherpad.log
+StandardError=append:/var/log/etherpad.log
+
+[Install]
+WantedBy=multi-user.target

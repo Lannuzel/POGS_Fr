@@ -1,0 +1,93 @@
+
+<div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="executionMode">Execution mode:</label>
+        <div class="col-sm-7">
+
+            <select class="custom-select"  id="executionMode">
+                <option value="1">Independent</option>
+                <option value="2">Interdependent</option>
+            </select>
+            <small  class="form-text text-muted">The independent version will not impose any restrictions on the subjects. The interdependent will enforce turn taking</small>
+        </div>
+    </div>
+    <div class="form-group row">
+            <label class="col-sm-3 col-form-label" for="taskText">Task Text:</label>
+            <div class="col-sm-9">
+                <textarea class="form-control htmleditor" id="taskText" rows="3"></textarea>
+            </div>
+    </div>
+
+    <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="colorsInPrimer">Use colors in primer:</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" id="colorsInPrimer"/>
+                    <small id="" class="form-text text-muted">If checked the colors chosen will also be applied to the primer page.</small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="colorsInTask">Use colors in task:</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" id="colorsInTask"/>
+                    <small id="" class="form-text text-muted">If checked the colors chosen will also be applied to the task work page.</small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="headersInPrimer">Use table headers in primer:</label>
+                <div class="col-sm-9">
+                    <input type="checkbox" id="headersInPrimer"/>
+                    <small id="" class="form-text text-muted">If checked the table headers using letters for columns and numbers for cells will also be applied to the primer page.</small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                    <label class="col-sm-3 col-form-label" for="headersInTask">Use table headers in task:</label>
+                    <div class="col-sm-9">
+                        <input type="checkbox" id="headersInTask"/>
+                        <small id="" class="form-text text-muted">If checked the table headers will also be applied to the task work page.</small>
+                    </div>
+            </div>
+    <div class="form-group row">
+        <label class="col-sm-3 col-form-label" for="sudokuDifculty">Create new grid
+                    configuration:</label>
+        <div class="col-sm-3">
+            <label class="" for="colsSize">Columns:</label>
+            <select id="colsSize">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <label class="" for="rowsSize">Rows:</label>
+            <select id="rowsSize">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+                <button type="button" class="btn btn-primary" id="createGrid">Setup grid</button>
+        </div>
+    </div>
+
+
+
+        <table id="gridTable" style="margin-bottom: 30px;">
+        </table>
+
+</div>

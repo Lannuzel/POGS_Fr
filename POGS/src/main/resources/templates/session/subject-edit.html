@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout.html}">
+<!--/*@thymesVar id="study" type="edu.mit.cci.pogs.model.jooq.tables.pojos.Study"*/-->
+<!--/*@thymesVar id="sessionBean" type="edu.mit.cci.pogs.view.session.beans.SessionBean"*/-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>POGS - Study </title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+        <li class="breadcrumb-item"><a href="/admin/studies">Studies</a></li>
+        <li class="breadcrumb-item "><a th:href="${'/admin/studies/' + study.id}" th:text="${study.studyName}"></a></li>
+        <li class="breadcrumb-item "><a th:href="${'/admin/studies/' + study.id + '/sessions/'+ sessionBean.id}" th:text="${study.studySessionPrefix + sessionBean.sessionSuffix}"></a></li>
+    </ol>
+    <h2 th:text="${study.studySessionPrefix + sessionBean.sessionSuffix }"></h2>
+
+
+    <h3>Session subjects: </h3>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <div class="col-12">
+                <button id="addSubject" class="btn btn-info">Add subject</button>
+            </div>
+        </div>
+        <script>
+        function addSubject(){
+                            var index = resolveGreatestIndex();
+                            var sessionId = $("#sessionId").val();
+                            var toAdd = "<tr class=\"subjectTR\" data-id=\""+index+"\">" +
+                             "<td><input type='hidden' value=''  name='subjectList["+index+"].id' />" +
+                              "<input type='hidden' value='' value='"+sessionId+"' name='subjectList["+index+"].sessionId' />" +
+                               "<input type='text' name='subjectList["+index+"].subjectExternalId'/></td>" +
+                                "<td><input type='text' name='subjectList["+index+"].subjectDisplayName' /></td>" +
+                                 "<td><button type=\"button\" class=\"btn pull-right btn-info addAttribute\" data-id=\""+index+"\" >Add Attribute</button><table id=\"subject_attr_"+index+"\"><tbody></tbody></table></td><td><button type='button' class='pull-right fa fa-trash btn-danger deleteSubject' ></button></td></tr>";
+                            $("#subjectList").append(toAdd);
+                            reBindFunctions()
+                        };
+        function resolveGreatestIndex(){
+            var totalOfSubjectsNow = $("#subjectList .subjectTR").length;
+            var allSubs = $("#subjectList .subjectTR");
+            var greatestIndex = -1;
+            for(var i=0; i < totalOfSubjectsNow; i++){
+                var currSub = parseInt($(allSubs[i]).data("id"));
+                if(currSub > greatestIndex){
+                    greatestIndex = currSub;
+                }
+
+            }
+            return greatestIndex+1;
+        }
+        function deleteSubject () {
+                            var r = confirm("Are you sure you want to delete this subject from this session ?");
+                            if (r == true) {
+                                $(this).parent().parent().remove();
+                            }
+                        }
+        function resolveGreatestAttributeIndex(subjctIndex){
+
+            var allAttrs = $("#subject_attr_" + subjctIndex + " tr");
+            var totalAttrsNow = allAttrs.length;
+            var greatestIndex = -1;
+             for(var i=0; i < totalAttrsNow; i++){
+                var currSubAttr = parseInt($(allAttrs[i]).data("id"));
+                if(currSubAttr > greatestIndex){
+                    greatestIndex = currSubAttr;
+                }
+             }
+             return greatestIndex+1;
+        }
+
+        function addAttribute () {
+                            var indexSubject = $(this).data("id");
+                            var indexAttribute = resolveGreatestAttributeIndex(indexSubject) ;
+                            console.log(" index" + indexSubject);
+                            // var type = typeof(attributeId);
+                            var attribute = "<tr data-id=\""+indexAttribute+"\"><td>" +
+                            "<input type='hidden'  id='subjectList["+indexSubject+"].subjectAttributes"+indexAttribute+".id' name='subjectList["+indexSubject+"].subjectAttributes["+indexAttribute+"].id' />" +
+                             "<input type='text' placeholder = 'Attribute Name'  id='subjectList"+indexSubject+".subjectAttributes"+indexAttribute+".attributeName' name='subjectList["+indexSubject+"].subjectAttributes["+indexAttribute+"].attributeName' /></td>" +
+                             "<td><input type='text' placeholder = 'Attribute Value' id='subjectList"+indexSubject+".subjectAttributes"+indexAttribute+".stringValue' name='subjectList["+indexSubject+"].subjectAttributes["+indexAttribute+"].stringValue' /></td>" +
+                             "<td><button type='button' class='pull-right fa fa-trash btn-danger deleteAttribute' ></button></td></tr>";
+                            // (this).parent().$("#attributeList").append(attribute)
+                            // $("#attributeList").append(attribute);
+                            console.log($(this).parent());
+                            console.log($(this).parent().find("tbody"));
+                            $(this).parent().find("tbody").append(attribute);
+                            reBindFunctions();
+                        };
+        function deleteAttribute() {
+            var r = confirm("Are you sure you want to delete this attribute from this subject?");
+            if (r == true) {
+                $(this).parent().parent().remove();
+            }
+        }
+        function reBindFunctions(){
+            $("#addSubject").unbind().click(addSubject);
+            $(".deleteSubject").unbind().click(deleteSubject);
+            $(".addAttribute").unbind().click(addAttribute)
+            $(".deleteAttribute").unbind().click(deleteAttribute    );
+        }
+            $(function() {
+                reBindFunctions();
+            });
+
+        </script>
+    </div>
+    <br/>
+    <form action="#" th:action="@{/admin/sessions/subjects/edit}" th:object="${subjectsBean}" method="post">
+        <input type="hidden" name="sessionId" id="sessionId" th:value="${sessionBean.id}">
+        <input type="hidden" name="studyId" th:value="${study.id}">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Subject external ID</th>
+                <th>Subject display name</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="subjectList">
+
+                    <tr th:each="person, rowStat : *{subjectList}" class="subjectTR" th:data-id="*{__${rowStat.index}__}" >
+                        <td><input type="hidden" th:field="*{subjectList[__${rowStat.index}__].id}"  /><input type="hidden" th:field="*{subjectList[__${rowStat.index}__].sessionId}"  /><input type="text" th:field="*{subjectList[__${rowStat.index}__].subjectExternalId}" /></td>
+                        <td><input type="text" th:field="*{subjectList[__${rowStat.index}__].subjectDisplayName}" /></td>
+                        <td><button type="button" class="btn btn-info pull-right  addAttribute" th:data-id="*{__${rowStat.index}__}" >Add Attribute</button>
+                                <table th:id="${'subject_attr_'+rowStat.index}"><tbody>
+                                    <tr th:each=" attr, rowStat2: *{subjectList[__${rowStat.index}__].subjectAttributes}" th:data-id="*{__${rowStat2.index}__}">
+                                        <td>
+                                            <input type="hidden" th:field="*{subjectList[__${rowStat.index}__].subjectAttributes[__${rowStat2.index}__].id}" />
+                                            <input type='text' placeholder = 'Attribute Name' th:field="*{subjectList[__${rowStat.index}__].subjectAttributes[__${rowStat2.index}__].attributeName}" />
+                                        </td>
+                                         <td>
+                                            <input type='text' placeholder = 'Attribute Value' th:field="*{subjectList[__${rowStat.index}__].subjectAttributes[__${rowStat2.index}__].stringValue}" />
+                                         </td>
+                                         <td>
+                                            <button type='button' class='pull-right fa fa-trash btn-danger deleteAttribute' ></button>
+                                         </td>
+                                    </tr>
+                                </tbody></table>
+                         </td>
+                        <td><button type="button" class="pull-right fa fa-trash btn-danger deleteSubject" ></button></td>
+                    </tr>
+            </tbody>
+        </table>
+        <br/>
+        <a class="btn btn-danger btn-primary" th:href="${'/admin/studies/' + study.id + '/sessions/'+ sessionBean.id}">Cancel</a>
+        <button type="submit" class="btn btn-primary">Save subject list</button>
+        <br/>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<div id="surveyContainer" class="container h-100">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+
+
+            <form id="surveyForm">
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+<!-- Survey dependencies-->
+<script>
+
+//Custom Field implementation.
+
+const SURVEY_CONST = {
+    FIELD_NAME: "surveyAnswer",
+    INPUT_FIELD: "InputField",
+    RADIO_FIELD: "RadioField",
+    SELECT_FIELD: "SelectField",
+    CHECKBOX_FIELD: "CheckBoxField",
+    CHECKBOX_FIELD_SELECT: "checkboxSelect",
+    CHECKBOX_FIELD_UNSELECT: "checkboxSelect",
+};
+const SURVEY_TRANSIENT = {
+    CLICK_RADIO_NOT_LOG : "clickInRadio",
+    FOCUS_IN_CELL: "focusInCell",
+    CLICK_CHECKBOX_NOT_LOG : "clickInCheckbox",
+    MOUSE_OVER_FIELD: "mouseOverField",
+    MOUSE_OUT_OF_FIELD: "mouseOutOfField"
+}
+const SURVEY_FIELDS = {
+    TEXT_FIELD : "text",
+    RADIO_FIELD : "radio",
+    SELECT_FIELD : "select",
+    CHECKBOX_FIELD : "checkbox",
+
+}
+const SECOND_FIELD_NAMING = "Confirmation"; // "Second answer"
+const CANT_ANSWER_SECOND_AUTHOR_FIRST = "Confirmation from the other party shows up here"; //"You can't answer the second because you were author of the first answer"
+const CANT_ANSWER_FIST_AUTHOR_SECOND = "This is what the other party selected"; // "You can't answer the first because you were author of the second answer";
+
+class Field {
+    constructor(surveyRefence,jsoninfo){
+        this.surveyRefence = surveyRefence;
+        this.jsonInfo = jsoninfo;
+        this.finalAnswerSubject = null;
+        this.index = null;
+        this.secondAnswerField = null;
+        this.firstAnswerField = null;
+        this.originalFieldAuthor = null;
+
+    }
+    setSecondAnswerField(field){
+        //console.log("Setting second answer field object" + field)
+        this.secondAnswerField = field;
+    }
+    broadcastReceived(message){
+        let attrName = message.content.attributeName;
+
+        if(message.sender != this.getPogsPlugin().getSubjectId()) {
+            if ((attrName.indexOf(SURVEY_TRANSIENT.MOUSE_OVER_FIELD) > -1)) {
+                this.addSubjectInteraction(message.sender)
+            }
+        }
+        if(message.sender != this.getPogsPlugin().getSubjectId()) {
+            if ((attrName.indexOf(SURVEY_TRANSIENT.MOUSE_OUT_OF_FIELD) > -1)) {
+                this.removeSubjectInteraction(message.sender);
+            }
+        }
+
+
+    }
+    setAuthorModal(){
+
+        if(!$("#not_able_answer_" + this.index).length){
+    	    $("#surveyField_"+this.index).css("position","relative");
+    	    $("#surveyField_"+this.index).append("<div id='not_able_answer_"+this.index+"' style='width: 100%;height: 100%;position: absolute;top: 0;left: 0;background-color: rgb(0,0,0);background-color: rgba(0,0,0,0.4);text-align: center;padding: 26px;margin-left: -24px;'><div>"+CANT_ANSWER_SECOND_AUTHOR_FIRST+"</div></div>");
+    	}
+    }
+    unsetAuthorModal(){
+    if($("#not_able_answer_"+this.index)){
+    	$("#not_able_answer_"+this.index).remove();
+    	$("#surveyField_"+this.index).css("position","");
+    	}
+    }
+
+    setSecondAuthorModal(){
+
+        if(!$("#not_able_answer_" + this.index).length){
+            $("#surveyField_"+this.index).css("position","relative");
+            $("#surveyField_"+this.index).append("<div id='not_able_answer_"+this.index+"' style='width: 100%;height: 100%;position: absolute;top: 0;left: 0;background-color: rgb(0,0,0);background-color: rgba(0,0,0,0.4);text-align: center;padding: 26px;margin-left: -24px;'><div>"+CANT_ANSWER_FIST_AUTHOR_SECOND+"</div></div>");
+        }
+    }
+    unsetSecondAuthorModal(){
+        if($("#not_able_answer_"+this.index)){
+            $("#not_able_answer_"+this.index).remove();
+            $("#surveyField_"+this.index).css("position","");
+        }
+    }
+    setSecondFieldAuthor(author){
+        this.secondFieldAuthor = author;
+        if(this.secondFieldAuthor == this.getPogsPlugin().getSubjectId()){
+            this.setSecondAuthorModal();
+        }else {
+            this.unsetSecondAuthorModal();
+        }
+    }
+
+    setOriginalFieldAuthor(author){
+        this.originalFieldAuthor = author;
+        //if it is me set the block
+        this.show();
+        if(this.originalFieldAuthor == this.getPogsPlugin().getSubjectId()){
+            this.setAuthorModal();
+        }else {
+            this.unsetAuthorModal();
+        }
+        //console.log("Showing the field after final answer is set to original field and final answer was: " + this.originalFieldAuthor)
+    }
+    show(){
+        $('#surveyField_' +this.index).show();
+    }
+    setFieldHTMLAsSecondAnswer(firstAnswerField){
+        this.firstAnswerField = firstAnswerField;
+        $('#surveyField_' +this.index).hide();
+        $('#surveyField_' +this.index + ' .embed-responsive').remove();
+        $('#question' +this.index).html('<small><b>↪️'+SECOND_FIELD_NAMING+': '+ this.jsonInfo.question+'</b></small>');
+    }
+    getPogsPlugin(){
+        return this.surveyRefence.getPogsPlugin();
+    }
+    registerListenerAndGetFieldId(ref){
+        return this.surveyRefence.registerListenerAndGetFieldId(ref);
+    }
+    getInteractionIndicatorHTML(){
+        return '<small class="interaction-indicator form-text " style="font-size: 60%;text-align: left">Working on this field:<span class="subjectpool"></span> </small>'
+               + '<small class="finalanswer-indicator form-text " style="font-size: 60%;text-align: left">Latest answer :<span class="finalsubjectanswer"></span> </small>'
+    }
+    setFinalAnswer(subjectId){
+        this.finalAnswerSubject = subjectId;
+        let sub = this.getPogsPlugin().getSubjectByExternalId(subjectId);
+        $("#surveyField_" + this.index + " .finalsubjectanswer").empty();
+
+        $('<span class="badge ' + sub.externalId + '_color username">' + sub.displayName
+          + '</span>')
+            .appendTo("#surveyField_" + this.index + " .finalsubjectanswer");
+
+        $("#surveyField_" + this.index + " .finalanswer-indicator").addClass('text-muted');
+
+        //console.log('Second answer field: ' + this.secondAnswerField)
+        if(this.secondAnswerField != null){
+           this.secondAnswerField.setOriginalFieldAuthor(this.finalAnswerSubject);
+        }
+        if(this.firstAnswerField!= null){
+            this.firstAnswerField.setSecondFieldAuthor(this.finalAnswerSubject);
+        }
+    }
+    handleOnMouseOverField(event){
+        this.getPogsPlugin()
+            .saveCompletedTaskAttribute(SURVEY_TRANSIENT.MOUSE_OVER_FIELD+this.index,
+                                        "", 0.0,
+                                        this.index, false);
+    }
+    handleOnMouseOutOfField(event){
+        this.getPogsPlugin()
+            .saveCompletedTaskAttribute(SURVEY_TRANSIENT.MOUSE_OUT_OF_FIELD+this.index,
+                                        "", 0.0,
+                                        this.index, false);
+    }
+    addSubjectInteraction(subjectId){
+        let sub = this.getPogsPlugin().getSubjectByExternalId(subjectId);
+        if($("#surveyField_"+this.index+" .subjectpool ."+sub.externalId+'_color').length == 0) {
+
+            $('<span class="badge ' + sub.externalId + '_color username">' + sub.displayName
+              + '</span>')
+                .appendTo("#surveyField_" + this.index + " .subjectpool");
+            $("#surveyField_" + this.index + " .interaction-indicator").addClass("text-muted");
+
+        }
+    }
+    removeSubjectInteraction(subjectId){
+        let sub = this.getPogsPlugin().getSubjectByExternalId(subjectId);
+        if($("#surveyField_"+this.index+" .subjectpool ."+sub.externalId+'_color').length>=0) {
+
+            $("#surveyField_"+this.index+" .subjectpool ."+sub.externalId+'_color').remove();
+        }
+        if($("#surveyField_"+this.index+" .subjectpool .badge").length ==0){
+            $("#surveyField_" + this.index + " .interaction-indicator").removeClass("text-muted");
+        }
+    }
+    setupHooks(){
+        $('#surveyField_'+this.index ).on('mouseenter',this.handleOnMouseOverField.bind(this))
+        $('#surveyField_'+this.index ).on('mouseleave',this.handleOnMouseOutOfField.bind(this))
+    }
+    saveCompletedTaskAttribute(attributeName, stringValue, doubleValue, intValue, loggable, fieldType){
+            //console.log("Saving completed task attribute : " + fieldType);
+            var intVal = -1;
+            if(this.firstAnswerField!=null){
+                intVal = this.firstAnswerField.index;
+                //console.log("Original field index: " + intVal)
+            }
+            this.getPogsPlugin().saveCompletedTaskAttribute(attributeName,
+                                                            stringValue, doubleValue,
+                                                            intVal, loggable, fieldType,
+                                                            'Subject selected in field '+this.index
+                                                            +' ' + ((intVal ==-1)?('(first answer)')
+                                                            :('(second answer)'))+' of type: '
+                                                            + fieldType +  ' :' + stringValue);
+    }
+
+}
+
+class VideoInformation {
+    constructor(videoURL){
+        this.videoURL = videoURL;
+    }
+    getHTML(){
+        return ' <div class="embed-responsive embed-responsive-16by9 row"><iframe '
+               + 'class="embed-responsive-item" src="'+this.videoURL+'" '
+               + 'frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>';
+    }
+}
+
+</script>
+    <!-- <script src="/js/lib/survey/SurveyField.js"></script> -->
+
+    <script src="/js/lib/survey/CheckboxField.js"></script>
+    <script src="/js/lib/survey/InformationField.js"></script>
+    <script src="/js/lib/survey/InputField.js"></script>
+    <script src="/js/lib/survey/RadioField.js"></script>
+    <script src="/js/lib/survey/RadioTableField.js"></script>
+    <script src="/js/lib/survey/SelectField.js"></script>
+    <script src="/js/lib/survey/OrderableField.js"></script>
+
+    <script src="/js/lib/survey/Survey.js"></script>

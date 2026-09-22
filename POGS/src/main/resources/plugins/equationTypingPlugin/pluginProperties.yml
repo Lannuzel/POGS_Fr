@@ -1,0 +1,5 @@
+name: equationTypingPlugin
+description: An equation typing task that provides a Google Doc-like shared textfield that all participants can type in simultaneously.
+
+scoring:
+    scoringType : script

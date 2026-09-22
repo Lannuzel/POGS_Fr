@@ -1,0 +1,60 @@
+
+<div>
+    <div class="container-fluid information">
+    You can use this special variables to enable network functionality:
+    <ul>
+        <li><b>${allTeammates}</b> all of teammates of a given team in a session. If used in the question
+        it will render the list of display names separated by coma. If used in an option, it will be
+        rendered as each teammate as an option.
+        </li>
+        <li><b>${otherTeamates}</b> all teammates but the current subject answering the survey. This renders as a coma separated list
+        in questions, and separate options if used in options.</li>
+        <li><b>${lastTaskName}</b> if used in sequential mode, the last task's name, if in parallel it will render an empty string. This way the survey can use it in reference to the last task. Only rendered as text</li>
+        <li><b>${allTasksNames}</b> all tasks names in the current session. The list will render as coma separated task names or as option items if used in an option field</li>
+        <li><b>${otherTasksNames}</b> all tasks names but the current survey in question. The list will render as coma separated values or as options if used in an option field.</li>
+        <li><b>${sessionName}</b> It will render the session suffix.</li>
+    </ul>
+    </div>
+</div>
+<style>
+ .flex-table th input[type=text] {width: 100px}
+ .flex-table td {text-align: center}
+ .table-container{width: 100%; overflow-x: scroll}
+</style>
+<div id="survey">
+
+</div>
+
+<div class="form-group row">
+    <label class="col-sm-3 col-form-label" for="questionType">Create a new question:</label>
+    <div class="col-sm-3">
+        <select id="questionType" class="custom-select">
+            <option value="text">Short Answer</option>
+            <option value="radio">Multiple Choices</option>
+            <option value="checkbox">Checkboxes</option>
+            <option value="select">Select</option>
+            <option value="introduction">Introduction</option>
+            <option value="radiotable">Radio Table </option>
+
+        </select>
+
+    </div>
+    <div class="col-sm-3">
+        <label class="checkbox-inline"><input type="checkbox" id="withVideo">With Video</label>
+    </div>
+    <div class="col-sm-3">
+        <button type="button" class="btn btn-primary" id="addQuestion">Add</button>
+    </div>
+</div>
+
+    <!-- Survey dependencies-->
+    <script src="/js/lib/survey/SurveyField.js"></script>
+    <script src="/js/lib/survey/CheckboxField.js"></script>
+    <script src="/js/lib/survey/InformationField.js"></script>
+    <script src="/js/lib/survey/InputField.js"></script>
+    <script src="/js/lib/survey/RadioField.js"></script>
+    <script src="/js/lib/survey/RadioTableField.js"></script>
+    <script src="/js/lib/survey/SelectField.js"></script>
+    <script src="/js/lib/survey/OrderableField.js"></script>
+
+    <script src="/js/lib/survey/Survey.js"></script>

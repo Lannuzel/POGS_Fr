@@ -1,0 +1,15 @@
+[Unit]
+Description=POGS Service
+After=network.target
+
+[Service]
+ExecStart=/root/POGS_Fr/start-pogs.sh
+Restart=on-failure
+RestartSec=5
+User=root
+WorkingDirectory=/root/POGS_Fr/POGS
+StandardOutput=file:/var/log/pogs.log
+StandardError=file:/var/log/pogs.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="${template}">
+<head>
+    <meta charset="UTF-8">
+    <title>POGS</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex align-items-center flex-column justify-content-center h-100  text-white" style="height: 100%">
+
+
+
+        <div class="form-group waiting_message" >
+            <div id="countdown"></div>
+            <div th:remove="tag" th:utext="${pogsSession.donePageText}"></div>
+        </div>
+        <div class="waiting_message" th:if="${showScore}">
+        <div class="h-100">Scoreboard </div>
+                <table class="table table-striped" >
+                    <thead>
+                        <tr>
+                            <th> Task </th>
+                            <th:block th:each="teamWrapper : ${teamWrappers}">
+                                <th th:if="${showSubjectName}">
+                                    <span th:each="subj : ${teamWrapper.subjects}" th:text="${subj.subjectDisplayName}" th:class="${subj.subjectExternalId + '_color badge'}"></span>
+                                </th>
+                                <th th:if="${ not showSubjectName}" th:id="${teamWrapper.team.id + '_team'}"></th>
+                            </th:block>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <th:block th:each=" tsw : ${taskScoreWrappers}">
+                            <tr>
+                                <td th:text="${tsw.taskWrapper.taskName}"></td>
+                               <td  th:each="ts : ${tsw.teamScore}" th:text="${#numbers.formatDecimal(ts, 0, 'DEFAULT', 2, 'DEFAULT')}"></td>
+                            </tr>
+                        </th:block>
+                    </tbody>
+                </table>
+                <script>
+                $(function (){
+                    let teamIndex = parseInt('[(${subjectsTeamIndex})]') + 2;
+                    $("td:nth-child("+teamIndex+")").css("background-color","gray");
+
+                    let leng = $("td:nth-child("+teamIndex+")").length -1;
+                    let ref = $($("td:nth-child("+teamIndex+")")[leng]);
+
+                    ref.popover({
+                       content: "This is your team!",
+                       html: true,
+                       placement: "bottom",
+                       animation: true,
+                       trigger: "hover",  container: 'body'
+                    });
+                    ref.popover('show');
+                });
+                </script>
+        </div>
+        <script>
+
+            $(function () {
+
+
+
+                pogs.setup({
+                               currentUrl: window.location,
+                               sessionId: '[(${pogsSession.id})]',
+                               subjectId: '[(${subject.subjectExternalId})]',
+                               teammates: [(${teammates})],
+                               secondsRemainingCurrentUrl: [(${secondsRemainingCurrentUrl})],
+                               doneUrlParameter : '[(${pogsSession.doneUrlParameter})]',
+                               nextUrl : '[(${nextUrl})]',
+                               completedTaskId: null,
+                               hasCollaboration:false,
+                               hasChat: false
+                           });
+
+
+
+
+
+            });
+
+
+        </script>
+    </div>
+</div>
+<div layout:fragment="footer">
+    &copy; Copyright Center for Collective Intelligence 2018. All rights reserved.
+</div>
+</body>
+</html>

@@ -1,0 +1,25 @@
+database:
+  host: database:3306
+  schema: pogs
+  url: jdbc:mysql://${database.host}/${database.schema}?allowPublicKeyRetrieval=true&useSSL=false
+  username: root
+  password: 1234
+videoprovider:
+  providerurl: ${VIDEO_PROVIDER_URL}
+  privatekey : ${VIDEO_PROVIDER_PRIVATE_KEY_PATH}
+  api_token : ${VIDEO_PROVIDER_API_KEY}
+  app_id : ${VIDEO_PROVIDER_APP_ID}
+plugin:
+  dir: /app/plugins
+images:
+  dir: /app/uploadedFiles
+
+email:
+  smtpHost: ${SMTP_HOST}
+  smtpPort: ${SMTP_PORT}
+  userName: ${SMTP_USERNAME}
+  password: ${SMTP_PASSWORD}
+spring:
+  redis:
+    host: redisserver
+    port: 6379

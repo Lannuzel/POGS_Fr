@@ -1,0 +1,29 @@
+# --- Secrets / configuration locale ---
+POGS/.env
+**/APIKEY.txt
+**/APIKEY_.txt
+**/SESSIONKEY.txt
+**/settings.json
+**/settings copy.json
+**/credentials.json
+!**/settings.json.template
+
+# --- Dumps de base de données ---
+*.sql
+backup_all_db.sql
+
+# --- Logs ---
+logs/
+*.log
+
+# --- Dépendances / builds Node ---
+**/node_modules/
+POGS/node/
+POGS/.eyeglass_cache/
+
+# --- Build Maven ---
+POGS/target/
+
+# --- Divers OS / éditeurs ---
+.DS_Store
+Thumbs.db

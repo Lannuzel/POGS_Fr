@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin-layout.html}">
+<!--/*@thymesVar id="study" type="edu.mit.cci.pogs.model.jooq.tables.pojos.Study"*/-->
+<!--/*@thymesVar id="sessionBean" type="edu.mit.cci.pogs.view.session.beans.SessionBean"*/-->
+<head>
+    <meta charset="UTF-8">
+    <title>POGS - Study </title>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+        <li class="breadcrumb-item"><a href="/admin/studies">Studies</a></li>
+        <li class="breadcrumb-item "><a th:href="${'/admin/studies/' + study.id}"
+                                        th:text="${study.studyName}"></a></li>
+        <li class="breadcrumb-item "><a
+                th:href="${'/admin/studies/' + study.id + '/sessions/'+ sessionBean.id}"
+                th:text="${study.studySessionPrefix + sessionBean.sessionSuffix}"></a></li>
+    </ol>
+    <h2><span th:text="${study.studySessionPrefix + sessionBean.sessionSuffix }"></span>
+                <span  class="badge badge-primary" th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).NOTSTARTED.getId().toString()}">Not started</span>
+                <span  class="badge badge-warning" th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).CONFIGURING.getId().toString()}">Starting soon</span>
+                <span  class="badge badge-warning" th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).STARTED.getId().toString()}">Running</span>
+                <span  class="badge badge-success" th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).DONE.getId().toString()}">Done</span>
+                <span  class="badge badge-danger" th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).ERROR.getId().toString()}">Status: Error</span>
+                </h2>
+    <div class="col">
+        <div class="col-12">
+            <a th:unless="${sessionBean.hasSessionStarted}"
+               th:href="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/edit'}"
+               class="btn btn-outline-primary float-right">
+                Edit session</a>
+
+                <!-- a th:if="${sessionBean.hasSessionStarted}" style="margin:5px" class="btn-link btn-info float-right"
+                th:href="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/
+                '}">
+                                Export session data</a -->
+
+        <a th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).STARTED.getId().toString() or
+        sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).CONFIGURING.getId().toString() }"  style="margin:5px" class="btn btn-danger float-right"
+               id="stopSession">
+                STOP session</a>
+
+
+            <a th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).DONE.getId().toString()}"  style="margin:5px" class="btn btn-danger float-right"
+               id="resetSession">
+                Reset session</a>
+
+            <a th:if="${sessionBean.status == T(edu.mit.cci.pogs.model.dao.session.SessionStatus).DONE.getId().toString()}" class="btn btn-sm btn-outline-success float-right" style="margin:5px"
+            th:href="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/score'}">
+                Score data</a>
+
+            <a th:if="${sessionBean.hasSessionStarted}"  style="margin:5px"
+            class="btn btn-sm btn-outline-success float-right"
+               id="reScore">
+                Re score session</a>
+
+            <a th:if="${sessionBean.hasSessionStarted}"
+               th:href="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/edit'}"
+               class="btn btn-sm btn-outline-primary float-right" style="margin:5px">
+                View session details (read only)</a>
+
+        </div>
+    </div>
+    <script>
+        $(function () {
+            $("#resetSession").click(function () {
+                var r = confirm(
+                    "Are you sure you want to reset this session, all saved data like completed tasks and logs will be deleted?");
+                if (r == true) {
+                    $("#resetSessionForm").submit();
+                }
+            })
+            $("#stopSession").click(function () {
+                var r = confirm(
+                    "Are you sure you want to STOP this session, all saved data like completed tasks and logs will be lost and users will face error messages!?");
+                if (r == true) {
+                    $("#resetSessionForm").submit();
+                }
+            });
+            $("#reScore").click(function () {
+                var r = confirm(
+                    "Are you sure you want to re score this session, all saved scoring data will be replaced by the new calculations!");
+                if (r == true) {
+                    $("#rescoreSessionForm").submit();
+                }
+            });
+                });
+    </script>
+    <form th:action="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/reset'}"
+          method="post" id="resetSessionForm">
+    </form>
+    <form th:action="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/rescore'}"
+              method="post" id="rescoreSessionForm">
+    </form>
+    <form th:action="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/stop'}"
+                  method="post" id="stopSessionForm">
+        </form>
+
+    <p th:text="${#dates.format(sessionBean.sessionStartDate, 'dd/MM/yyyy HH:mm')}"></p>
+
+    <h3>Session subjects: </h3>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <div class="col-12">
+
+
+                <a th:unless="${sessionBean.hasSessionStarted}" th:href="${'/admin/studies/' + study.id + '/sessions/'+sessionBean.id+'/subjects/edit'}"
+                   class="btn btn-outline-primary float-right">
+                    Edit subjects</a>
+
+                    <div th:if="${sessionBean.hasSessionStarted}" class="float-right">
+                    <button  th:href="${'/admin/studies/' + study.id + '/sessions/'+sessionBean.id+'/subjects/edit'}"
+                                       class="btn btn-outline-primary " disabled="disabled">
+                                        Edit subjects</button><br/>
+                                        <small>Can't edit subjects if session<br/> has already started.</small>
+                                        </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Internal ID</th>
+            <th>Subject external ID</th>
+            <th>Subject display name</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="subject : ${subjectsBean.subjectList}">
+            <tr>
+                <td th:text="${subject.id}"></td>
+                <td th:text="${subject.subjectExternalId}"></td>
+                <td th:text="${subject.subjectDisplayName}"></td>
+
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+
+
+    <div th:if="sessionBean.canHaveCommunicationMatrix">
+
+        <h3>Communication matrix constraint: </h3>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col">
+                <div class="col-12">
+                    <a th:href="${'/admin/studies/' + study.id + '/sessions/'+sessionBean.id+'/subjects/editCommunication'}"
+                       class="btn btn-outline-primary float-right">
+                        Edit communication constraint</a>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <table class="table table-striped">
+            <thead>
+
+            <tr>
+                <th> - </th>
+                <th:block th:each="subject : ${subjectsBean.subjectList}">
+                    <th th:text="${subject.subjectExternalId}"></th>
+                </th:block>
+            </tr>
+            </thead>
+            <tbody>
+            <th:block th:each="subject,iteratorStatusSubject : ${subjectsBean.subjectList}">
+                <tr>
+                    <td th:text="${subject.subjectExternalId}"></td>
+                    <th:block th:if="subject" th:each="subjectCommunication, iteratorStatusSubject2 : ${subject.subjectCommunications}">
+                        <td th:if="${iteratorStatusSubject.count > iteratorStatusSubject2.count}">
+                            <span th:if="${subjectCommunication.allowed}"><i class="fa fa-check-square" style="color:darkgreen"></i></span>
+                            <span th:if="${not subjectCommunication.allowed}"><i class="fa fa-times-circle"  style="color:darkred"></i></span>
+                        </td>
+                        <td th:if="${iteratorStatusSubject.count <= iteratorStatusSubject2.count}">-</td>
+                    </th:block>
+                </tr>
+            </th:block>
+            </tbody>
+        </table>
+        <h3>Communication channels: </h3>
+        <div class="col">
+                <div class="col-12">
+                    <a th:href="${'/admin/studies/' + study.id + '/sessions/' + sessionBean.id + '/chatchannels/create'}" class="btn btn-outline-primary float-right">
+                        Create channel</a>
+                </div>
+            </div>
+        </div>
+        <br/>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th> Chat channel </th>
+                    <th>Subjects in channel</th>
+                </tr>
+            </thead>
+            <tbody>
+                <th:block th:each="chatChannel,iteratorStatusSubject : ${chatChannelBeans}">
+                    <tr>
+                        <td th:text="${chatChannel.channelName}"></td>
+                        <td>
+                            <th:block th:each="subject, iter : ${chatChannel.subjectList}">
+                                 <span th:text="${subject.subjectExternalId}"></span>
+                                 <span th:if="not ${iter.last}" >,</span>
+                            </th:block>
+                        </td>
+                        <td>
+                        <button th:data-url="${'/admin/studies/' + study.id + '/sessions/'+sessionBean.id+'/chatchannels/'+chatChannel.id+'/delete'}"
+                                                                       class="btn btn-danger float-right deleteChat" style="margin-left: 10px">
+                                                                        <i class="fa fa-trash"></i></button>
+                            <a th:href="${'/admin/studies/' + study.id + '/sessions/'+sessionBean.id+'/chatchannels/'+chatChannel.id+'/edit'}"
+                                               class="btn btn-outline-primary float-right">
+                                                Edit channel</a>
+
+                        </td>
+                    </tr>
+                </th:block>
+            </tbody>
+        </table>
+        <script>
+        $(function(){
+            $(".deleteChat").click(function(e) {
+               var res = confirm("Are you sure you want to delete ?");
+               if (res == true) {
+                   window.location = $(this).data("url");
+                   return true;
+               }else{
+                   e.stopPropagation();
+                   return false;
+               }
+            })
+        })
+</script>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!--/*@thymesVar id="message" type="java.lang.String"*/-->
+<!--/*@thymesVar id="messageType" type="java.lang.String"*/-->
+<head>
+    <meta charset="UTF-8">
+    <title>POGS</title>
+    <link rel="stylesheet" href="../../dist/vendor/bootstrap/dist/css/bootstrap.min.css"
+          th:href="@{/vendor/bootstrap/dist/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../dist/css/style.css"
+          th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="container">
+
+    <header style="text-align: center;">
+        <img src="../../static/img/POGS_Logo_Color.png" th:src="@{/img/POGS_Logo_Color.png}"
+        style="margin: 20px;height: 80px;"/>
+    </header>
+
+    <div th:if="${message}" th:text="${message}"
+         th:class="${'alert alert-dismissible fade show ' + messageType}">
+    </div>
+
+    <div layout:fragment="content">
+        This is the page content.
+    </div>
+
+
+    <footer id="footer">
+        Copyright © 2020  <abbr title="Massachusetts Institute of Technology">MIT</abbr> ,
+        <abbr title="University of California Santa Barbara">UCSB</abbr> and
+        <abbr title="Carnegie Mellon University ">CMU</abbr>
+    </footer>
+</div>
+
+<script src="../../dist/vendor/jquery/dist/jquery.min.js"
+        th:src="@{/vendor/jquery/dist/jquery.min.js}"></script>
+<script src="../../dist/vendor/popper.js/dist/umd/popper.min.js"
+        th:src="@{/vendor/popper.js/dist/umd/popper.min.js}"></script>
+<script src="../../dist/vendor/bootstrap/dist/js/bootstrap.min.js"
+        th:src="@{/vendor/bootstrap/dist/js/bootstrap.min.js}"></script>
+</body>
+</html>

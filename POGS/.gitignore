@@ -1,0 +1,70 @@
+### Intellij ###
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+#module and compilation related files (optional)
+.env
+*.iml
+.idea/compiler.xml
+.idea/modules.xml
+.idea/encodings.xml
+.idea/misc.xml
+
+# User-specific stuff:
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+
+# Sensitive or high-churn files:
+.idea/dataSources.ids
+.idea/dataSources.xml
+.idea/dataSources.local.xml
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+
+# Plugins
+.idea/sonarlint
+
+# Gradle:
+.idea/gradle.xml
+.idea/libraries
+
+# IntelliJ
+/out/
+
+# JIRA plugin
+atlassian-ide-plugin.xml
+
+### Maven ###
+target/
+varibles.env
+.mysql/*
+.imagefiles/*
+### Other ###
+*.jar
+!.docker/pogsserver/pogs-0.0.1-SNAPSHOT.jar
+*.zip
+rebel.xml
+.idea/artifacts
+.DS_Store
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+### Custom ###
+
+# Unignore maven wrapper
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Maven frontend plugin
+node_modules/
+node/
+/src/main/resources/dist/vendor/
+yarn.lock
+.eyeglass_cache
+*.pyc
+
+# .idea files we don't need
+.idea/codeStyles/codeStyleConfig.xml

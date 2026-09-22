@@ -1,0 +1,5 @@
+name: sudokuPlugin
+description: A sudoku grid like task implementation, the researcher can setup the grid size
+
+scoring:
+    scoringType : script

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/workspace-layout.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>POGS</title>
+</head>
+<body>
+<!--/*@thymesVar id="errorMessage" type="java.lang.String"*/-->
+<!--/*@thymesVar id="action" type="java.lang.String"*/-->
+<!--/*@thymesVar id="externalId" type="java.lang.String"*/-->
+
+<div layout:fragment="content">
+    <div class="d-flex align-items-center flex-column justify-content-center h-100 " style="height: 100%">
+        <div class="" th:remove="tag" th:utext="${pogsSession.landingPageOverrideContent}" ></div>
+        <div id="jitsiVideoCallTestPage" style="min-height:250px;margin-bottom: 2px"></div>
+        <form id="landingPage" th:action="${action}" method="">
+            <input type="hidden" name="externalId" th:value="${externalId}">
+            <input type="hidden" name="workerId" th:value="${workerId}">
+            <input type="hidden" name="assignmentId" th:value="${assignmentId}">
+            <input type="hidden" name="hitId" th:value="${hitId}">
+            <input type="hidden" name="SESSION_ID" th:value="${SESSION_ID}">
+            <input type="hidden" name="PROLIFIC_PID" th:value="${PROLIFIC_PID}">
+            <input type="hidden" name="STUDY_ID" th:value="${STUDY_ID}">
+               <button type="submit" class="btn btn-primary" th:if="${not isPogsReferrer}" >Start</button>
+        </form>
+        <script>
+          $(function(){
+              var isPogsReferrer = [(${isPogsReferrer})];
+               if(isPogsReferrer){
+              $("#landingPage").submit();
+              }
+          });
+
+          //START OF JITSI TEST
+          var script = document.createElement('script');
+          function makeid(length) {
+              let result = '';
+              const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+              const charactersLength = characters.length;
+              let counter = 0;
+              while (counter < length) {
+                  result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                  counter += 1;
+              }
+              return result;
+          }
+
+          var jitsiProviderURL ="meet.jit.si/";
+          var url = "";
+
+          var randomZ = makeid(35);
+          var roomName = "pogs_session_video_chat_confenrence_76856758976898532342_"+ randomZ
+
+
+          url = jitsiProviderURL + roomName;
+          script.onload = function() {
+              var options = {};
+              options = {
+                  width: '100%',
+                  height: '100%',
+                  roomName: roomName,
+                  parentNode: document.getElementById("jitsiVideoCallTestPage"),
+                  interfaceConfigOverwrite: {
+                      filmStripOnly: false,
+                      MOBILE_APP_PROMO: false,
+                      HIDE_INVITE_MORE_HEADER: true,
+                      SHOW_CHROME_EXTENSION_BANNER: false,
+                      DISPLAY_WELCOME_PAGE_CONTENT: false,
+                      DISPLAY_WELCOME_PAGE_TOOLBAR_ADDITIONAL_CONTENT: false,
+                      TILE_VIEW_MAX_COLUMNS: 1,
+                      enableClosePage: false,
+                      toolbarButtons: [
+                          'microphone', 'camera',
+                          /*'desktop', 'embedmeeting', 'fullscreen',*/
+                      ],
+                  },
+                  userInfo: {
+                      displayName: "User" + randomZ
+                  },
+
+                  configOverwrite: {
+                      startAudioOnly: false,
+                      disableSimulcast: false,
+                      disableDeepLinking: true,
+                      useStunTurn: true,
+                      toolbarButtons: [
+                          'microphone', 'camera',
+                          /*'desktop', 'embedmeeting', 'fullscreen',*/
+                      ],
+                      prejoinPageEnabled: false,
+
+                  }
+              }
+              new window.JitsiMeetExternalAPI(url, options);
+
+          }
+
+          script.src = ("https://meet.jit.si/external_api.js")
+
+          document.getElementsByTagName('head')[0].appendChild(script);
+
+        </script>
+    </div>
+</div>
+
+<div layout:fragment="footer">
+    Copyright © 2020  <abbr title="Massachusetts Institute of Technology">MIT</abbr> ,
+                    <abbr title="University of California Santa Barbara">UCSB</abbr> and
+                    <abbr title="Carnegie Mellon University ">CMU</abbr>
+</div>
+</body>
+</html>

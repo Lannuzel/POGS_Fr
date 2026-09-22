@@ -1,0 +1,249 @@
+body {
+  background-color: #F4F4F1;
+}
+header{
+  margin-bottom: 15px;
+}
+
+.taskOrderNumber{
+  margin-left: 10px;
+  margin-right: 10px;
+  font-weight: 600;
+}
+.deleteTask {
+  cursor: pointer;
+}
+.chatValue{
+  width:320px;
+}
+/* Workspace classes */
+html,
+body {
+  height: 100%;
+  margin: 0
+}
+.flexbox {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+}
+.flexbox .main {
+  flex: 1;
+}
+.flexbox .header,
+.flexbox .footer {
+  background: #F4F4F1;
+  padding:7px
+}
+.flexbox-row {
+  display: flex;
+  height: 100%;
+}
+.flexbox-row .information,
+.flexbox-row .communication {
+  background: white;
+  padding: 1em;
+}
+//.flexbox-row .mainContent,
+
+.flexbox-row .information{
+  background: #fff;
+  padding: 1em;
+  max-width: 350px;
+  max-height: 600px;
+  overflow-y: scroll;
+}
+.scrollInfo {
+  height: 100vh !important; /* Prend toute la hauteur de la fenêtre */
+  max-height: 100vh!important; /* S'assure qu'il ne dépasse pas la hauteur de la fenêtre */
+  overflow: auto!important; /* Active le défilement si nécessaire */
+}
+.flexbox-row .mainContent {
+  flex: 1;
+  background: white;
+  min-width: 400px;
+  overflow: auto;
+}
+
+.centerContent {
+  display: flex;
+  flex-direction: column;
+}
+.waiting_message {
+  color: black;
+  font-size: 18px;
+  text-align:center;
+  padding-top: 10px;
+}
+.waiting_message #countdown {
+  color: black;
+  font-size: 21px;
+  font-weight: 700;
+  text-align:center;
+}
+/* Workspace classes */
+
+.message-card {
+  max-width: 80%;
+}
+.message-scroll {
+  overflow-y: auto;
+}
+.hit_color{
+  background-color: red;
+  opacity: 0.35;
+}
+.bg-lightgrey {
+  background-color: #f1f1f1;
+}
+
+.bg-lightblue{
+  background-color: lightblue;
+}
+#sidebar-content {
+  display: flex;
+  flex-direction: column;
+}
+#list-group {
+  flex: 1 1;
+}
+#list-group2{
+  flex: 1 1;
+}
+
+.sidebar-scroll {
+  overflow-y: auto;
+}
+.border-chat-lightgray {
+  border-style: solid;
+  border-width: 1px 0 1px 1px;
+  border-color: #e2e0e0!important;
+}
+.hover-bg-lightgray:hover {
+  background-color: #dcdcdc!important;
+  cursor: pointer;
+}
+
+.border-chat-window {
+  border: 1px solid #e2e0e0;
+}
+.task_work {
+  max-height: 800px;
+  overflow-y: scroll;
+}
+.chat_time{
+  flex-grow: 1;
+}
+.sidebarSubDivisionTitle{
+  color: #325e8c;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px;
+}
+.subject-icon{
+  background-color:#0E5EA9;color: white;font-size: 30px;cursor:pointer;
+}
+.chatRequestAvailable {
+  color: #00dd1c;font-size: 28px;cursor: pointer
+}
+.chatRequestBusy {
+  color: red;font-size: 28px;
+}
+.chatRequestNotAvailable {
+  color: grey;font-size: 28px;
+}
+.status-text-desc {
+  font-size:8px;
+}
+
+.statusAvailable {
+  background-color: #00dd1c;
+}
+
+.statusBusy {
+  background-color: red;
+}
+
+.statusNotAvailable {
+  background-color: gray;
+}
+
+.chatRequestIconRing {
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.todoEntry{
+  margin: 4px;
+}
+.deleteTodoItem{
+  cursor: pointer;
+}
+.assignTodoItem{
+  cursor: pointer;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.unassignTodoItem{
+  cursor: pointer;
+}
+.markDoneTodoItem{
+  cursor: pointer;
+}
+.deleteOption{
+  margin-top: 5px;
+  cursor: pointer;
+}
+.radioOption{
+  margin-right: 5px;
+}
+.votingBadge{
+  margin: 4px;
+  cursor: pointer;
+}
+.progressPosition{
+  margin-top: 7px;
+  width: 150px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.focusOpacity{
+  opacity: 0.2;
+}
+.optionText{
+  margin: 4px;
+}
+.addVotingOption {
+  cursor: pointer;
+}
+.assigneePill{
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.note-editor.note-frame .note-editing-area .note-editable {
+  background-color: white;
+}

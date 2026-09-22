@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<!--/*@thymesVar id="message" type="java.lang.String"*/-->
+<!--/*@thymesVar id="messageType" type="java.lang.String"*/-->
+<head>
+    <meta charset="UTF-8">
+
+    <title>POGS</title>
+
+    <link rel="stylesheet" href="../../dist/vendor/codemirror/lib/codemirror.css"
+                  th:href="@{/vendor/codemirror/lib/codemirror.css}"/>
+    <link rel="stylesheet" href="/js/codemirror/javascript.js"
+                    th:href="@{/js/codemirror/darcula.css}"/>
+
+    <link rel="stylesheet" href="../../dist/vendor/bootstrap/dist/css/bootstrap.min.css"
+          th:href="@{/vendor/bootstrap/dist/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../dist/css/style.css"
+          th:href="@{/css/style.css}"/>
+    <link rel="stylesheet" type="text/css" href="../../dist/vendor/bootstrap-duallistbox/dist/bootstrap-duallistbox.css"
+          th:href="@{/vendor/bootstrap-duallistbox/dist/bootstrap-duallistbox.css}">
+
+
+    <link rel="stylesheet" type="text/css" href="../../dist/vendor/font-awesome/css/font-awesome.css"
+          th:href="@{/vendor/font-awesome/css/font-awesome.css}">
+
+    <link rel="stylesheet" type="text/css" href="../../dist/vendor/jquery-datetimepicker/build/jquery.datetimepicker.min.css"
+          th:href="@{/vendor/jquery-datetimepicker/build/jquery.datetimepicker.min.css}">
+
+    <link rel="stylesheet" type="text/css"
+                    th:href="@{/vendor/summernote/dist/summernote.css}"
+                     href="../../dist/vendor/summernote/dist/summernote.css" >
+
+    <link rel="stylesheet" type="text/css"
+                    th:href="@{/vendor/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css}"
+                     href="../../dist/vendor/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css" >
+
+
+
+    <script src="../../dist/vendor/jquery/dist/jquery.min.js"
+            th:src="@{/vendor/jquery/dist/jquery.min.js}"></script>
+
+</head>
+<body>
+<div class="container">
+
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #f4f4f1;">
+        <a class="navbar-brand" href="#">
+            <!--<img src="../../static/img/logo.jpg" th:src="@{/img/logo.jpg}"/>-->
+            <img src="../../static/img/POGS_Acronym_Logo.png" th:src="@{/img/POGS_Acronym_Logo.png}" height="35"/>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="/admin/studies">Studies</a>
+                <a class="nav-item nav-link" href="/admin/taskgroups">Task groups</a>
+                <a class="nav-item nav-link" href="/admin/tasks">Tasks</a>
+            </div>
+        </div>
+        <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMIN')">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Admin
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="/admin/users">Users</a>
+                    <a class="dropdown-item" href="/admin/researchgroups">Research groups</a>
+                    <a class="dropdown-item" href="/admin/taskplugins">Task plugins</a>
+                    <a class="dropdown-item" href="/admin/dictionaries">Dictionaries</a>
+                    <a class="dropdown-item" href="/admin/chatscripts">Chat Scripts</a>
+                    <a class="dropdown-item" href="/admin/executablescripts">Executable Scripts</a>
+                    <a class="dropdown-item" href="/admin/dashboard">Dashboard</a>
+                </div>
+            </li>
+            <li>
+                <a class="nav-item nav-link" href="/login">Sign out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <header>
+
+    </header>
+
+    <div th:if="${message}" th:text="${message}"
+         th:class="${'alert alert-dismissible fade show ' + messageType}">
+    </div>
+
+    <div layout:fragment="content">
+        This is the page content.
+    </div>
+
+
+    <footer id="footer">
+        Copyright © 2020  <abbr title="Massachusetts Institute of Technology">MIT</abbr> ,
+                <abbr title="University of California Santa Barbara">UCSB</abbr> and
+                <abbr title="Carnegie Mellon University ">CMU</abbr>
+                Version 1.9.1
+    </footer>
+</div>
+
+
+<script src="../../dist/vendor/popper.js/dist/umd/popper.min.js"
+        th:src="@{/vendor/popper.js/dist/umd/popper.min.js}"></script>
+<script src="../../dist/vendor/bootstrap/dist/js/bootstrap.min.js"
+        th:src="@{/vendor/bootstrap/dist/js/bootstrap.min.js}"></script>
+
+<script src="../../dist/vendor/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js"
+        th:src="@{/vendor/bootstrap-duallistbox/dist/jquery.bootstrap-duallistbox.min.js}"></script>
+
+<script type="text/javascript"
+        src="../../dist/vendor/html5sortable/dist/html5sortable.js"
+        th:src="@{/vendor/html5sortable/dist/html5sortable.js}" ></script>
+
+<script type="text/javascript"
+        src="../../dist/vendor/jquery-datetimepicker/build/jquery.datetimepicker.min.js"
+        th:src="@{/vendor/jquery-datetimepicker/build/jquery.datetimepicker.full.js}" ></script>
+
+<script src="../../dist/vendor/summernote/dist/summernote.js"
+        th:src="@{/vendor/summernote/dist/summernote.js}"
+></script>
+<script src="../../dist/vendor/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"
+        th:src="@{/vendor/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js}">
+</script>
+<script src="../../dist/vendor/codemirror/lib/codemirror.js"
+    th:src="@{/vendor/codemirror/lib/codemirror.js}"></script>
+    <script src="../../dist/vendor/codemirror/lib/codemirror.js"
+        th:src="@{/js/codemirror/javascript.js}"></script>
+
+<script src="../../dist/vendor/jsonlint/lib/jsonlint.js"
+        th:src="@{/vendor/jsonlint/lib/jsonlint.js}">
+</script>
+
+</body>
+</html>

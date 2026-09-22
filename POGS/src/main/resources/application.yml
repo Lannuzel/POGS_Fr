@@ -1,0 +1,87 @@
+server:
+  port: 8080
+  error:
+    whitelabel:
+      enabled: false
+    include-stacktrace: always
+  servlet:
+    session:
+      timeout: 7d
+  compression:
+    enabled: true
+plugin:
+  # dir: ./plugins
+  dir: /root/POGS_Fr/POGS/src/main/resources/plugins
+
+
+spring:
+  main:
+    allow-circular-references: true
+  profiles:
+    include: database-config
+  datasource:
+    url: ${database.url}
+    username: ${database.username}
+    password: ${database.password}
+    hikari:
+      minimumIdle: 2
+      maximumPoolSize: 50
+      idleTimeout: 120000
+      connectionTimeout: 300000
+      leakDetectionThreshold: 300000
+  servlet:
+    multipart:
+      max-file-size: -1
+  security:
+    filter:
+      dispatcher-types: ASYNC,REQUEST,ERROR
+  mvc:
+    favicon:
+      enabled: false
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+      cache: false
+    cache:
+      period: 1d
+    # use comma-separated list to override default value
+  web:
+    resources:
+      chain:
+        strategy:
+          content:
+            paths:
+              - "/js/**"      # /static/js - our JavaScript files
+              - "/css/**"     # /(static|dist)/css - our CSS files
+              - "/vendor/**"  # /dist/vendor - external dependencies (from yarn)
+      static-locations: >
+            classpath:/dist/,
+            classpath:/static/
+
+logging:
+  level:
+    ROOT: WARN
+    org.springframework: INFO
+    org.springframework.jmx: WARN
+    org.springframework.boot.actuate: WARN
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: WARN
+    org.springframework.boot.web.servlet.FilterRegistrationBean: DEBUG
+    org.springframework.web.servlet.handler.SimpleUrlHandlerMapping: WARN
+    edu.mit.cci: DEBUG
+
+---
+
+spring:
+  profiles: development
+  web:
+    resources:
+      static-locations: >
+            file:src/main/resources/static/,
+            file:src/main/resources/dist/,
+            file:src/main/resources/plugins/,
+            classpath:/dist/,
+            classpath:/static/,
+            classpath:/plugins/
+      
